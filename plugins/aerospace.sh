@@ -1,10 +1,14 @@
 #!/bin/bash
 
-SPACE_ID="$1"
-FOCUSED_WORKSPACE="$AEROSPACE_FOCUSED_WORKSPACE"
+SPACE_ICON_COLOR_ACTIVE=0xff89b4fa
+SPACE_ICON_COLOR_INACTIVE=0xfff38ba8
 
-if [ "$SPACE_ID" = "$FOCUSED_WORKSPACE" ]; then
-    sketchybar --set space.$SPACE_ID icon.color=0xff89a4fb
-else
-    sketchybar --set space.$SPACE_ID icon.color=0xfff38ba8
-fi
+FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
+
+for sid in $(aerospace list-workspaces --all); do
+    if [ "$sid" = "$FOCUSED_WORKSPACE" ]; then
+        sketchybar --set space.$sid icon.color=$SPACE_ICON_COLOR_ACTIVE 
+    else
+        sketchybar --set space.$sid icon.color=$SPACE_ICON_COLOR_INACTIVE 
+    fi
+done

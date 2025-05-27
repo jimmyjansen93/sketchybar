@@ -1,19 +1,19 @@
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 # ~~ bar ~~
-
 sketchybar --bar position=top \
                  height=30 \
                  blur_radius=30 \
                  color=0xFF1e1e2e \
-                 margin=20 \
+                 margin=15 \
                  corner_radius=8 \
                  y_offset=7 \
                  border_width=1 \
+                 display=main \
+                 topmost=off \
                  border_color=0xff89b4fa \
 
 # ~~ default ~~
-
 default=(
   padding_left=0
   padding_right=0
@@ -35,68 +35,79 @@ sketchybar --default "${default[@]}"
 
 
 # ~~ left items ~~
-
-APPLE=(
-  icon=
-  icon.color=0xffa6e3a1
-  icon.padding_left=0
-  label.drawing=off
-  background.padding_left=0
-  background.padding_right=10
-  background.color=0xFF1e1e1e
-)
-
-sketchybar --add item apple left \
-           --set apple "${APPLE[@]}"
+# APPLE=(
+#   icon=
+#   icon.color=0xffa6e3a1
+#   icon.padding_left=0
+#   label.drawing=off
+#   background.padding_left=0
+#   background.padding_right=10
+#   background.color=0xFF1e1e1e
+# )
+#
+# sketchybar --add item apple left \
+#            --set apple "${APPLE[@]}"
            
 # aerospace
-
 sketchybar --add event aerospace_workspace_change \
            --add event window_focus
 
-# Workspace Icons
+sketchybar --add item space_listener center \
+    --subscribe space_listener aerospace_workspace_change window_focus \
+    --set space_listener \
+    drawing=off \
+    script="$CONFIG_DIR/plugins/aerospace.sh"
+    
 
-SPACE_ICONS=("" "" "")
+# Workspace Icons
+SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "0")
 SPACE_ICON_COLOR_ACTIVE=0xff89b4fa   
 SPACE_ICON_COLOR_INACTIVE=0xfff38ba8 
 
 for sid in $(aerospace list-workspaces --all); do
-    icon_index=$((sid - 1))
+    icon_index=$((sid -1))
     sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change window_focus \
         --set space.$sid \
         background.color=0xFF1e1e1e \
         background.corner_radius=5 \
         background.height=20 \
         icon.color=$SPACE_ICON_COLOR_INACTIVE \
-        icon.padding_left=5 \
-        icon.padding_right=5 \
+        icon.padding_left=2 \
+        icon.padding_right=2 \
         background.drawing=off \
         icon="${SPACE_ICONS[$icon_index]}" \
         label.drawing=off \
-        click_script="aerospace workspace $sid" \
-        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+        click_script="aerospace workspace $sid"
 done
 
+sketchybar --add item space.0 left \
+    --set space.0 \
+    background.color=0xFF1e1e1e \
+    background.corner_radius=5 \
+    background.height=20 \
+    icon.color=$SPACE_ICON_COLOR_INACTIVE \
+    icon.padding_left=2 \
+    icon.padding_right=2 \
+    background.drawing=off \
+    icon="${SPACE_ICONS[10]}" \
+    label.drawing=off \
+    click_script="aerospace workspace 0"
 # chevron
+# sketchybar --add item chevron left \
+#            --set chevron icon= label.drawing=off \
 
-sketchybar --add item chevron left \
-           --set chevron icon= label.drawing=off \
-           
 
 # ~~ middle items ~~ 
-
 # front app
-
-FRONT_APP=(
-  label.font="JetBrainsMono Nerd Font:Thin:13.0"
-  icon.font="sketchybar-app-font:Regular:14.0" 
-  script="$PLUGIN_DIR/front_app.sh"
-)
-
-sketchybar --add item front_app centre \
-           --set front_app "${FRONT_APP[@]}" \
-           --subscribe front_app front_app_switched 
+# FRONT_APP=(
+#   label.font="JetBrainsMono Nerd Font:Thin:13.0"
+#   icon.font="sketchybar-app-font:Regular:14.0" 
+#   script="$PLUGIN_DIR/front_app.sh"
+# )
+#
+# sketchybar --add item front_app centre \
+#            --set front_app "${FRONT_APP[@]}" \
+#            --subscribe front_app front_app_switched 
 
 
 # ~~ right items ~~
@@ -106,9 +117,9 @@ sketchybar --add item time right                                    \
            --set      time icon=󱑎                                   \
                            icon.color=0xfff38ba8                    \
                            background.border_color=0xFF1e1e1e       \
-                           label.padding_right=0                    \
-                           background.padding_right=0               \
-                           label="$(date '+%I:%M %p')"              \
+                           label.padding_right=5                    \
+                           background.padding_right=1               \
+                           label="$(date '+%H:%M ')"              \
                            script='./scripts/time.sh'               \
                            update_freq=1
 
@@ -121,14 +132,14 @@ sketchybar --add item date right                                    \
                            script='./scripts/date.sh'               \
                            update_freq=10
 
-# weather
-sketchybar --add item weather right                                 \
-           --set      weather icon=A                                \
-                              icon.color=0xff89b4fa                 \
-                              background.border_color=0xFF1e1e1e    \
-                              label="--°C"                          \
-                              script='./scripts/weather.sh'         \
-                              update_freq=60
+# # weather
+# sketchybar --add item weather right                                 \
+#            --set      weather icon=A                                \
+#                               icon.color=0xff89b4fa                 \
+#                               background.border_color=0xFF1e1e1e    \
+#                               label="--°C"                          \
+#                               script='./scripts/weather.sh'         \
+#                               update_freq=60
 
 # battery
 sketchybar --add item battery right                                 \
@@ -140,6 +151,5 @@ sketchybar --add item battery right                                 \
                               update_freq=20
 
 # ~~ hotload ~~
-# Sketchybar wird automatisch neu geladen nach einem Update
 sketchybar --hotload on
 sketchybar --update

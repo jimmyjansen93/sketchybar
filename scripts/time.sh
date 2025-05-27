@@ -1,1 +1,1 @@
-sketchybar --set time label="$(date '+%I:%M')"
+sketchybar --set time label="$(date '+%H:%M ')"
