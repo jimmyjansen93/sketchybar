@@ -28,14 +28,3 @@ if ! command -v brew >/dev/null 2>&1; then
   return 1
 fi
 
-if ! command -v go &> /dev/null; then
-  brew install go
-fi
-
-if ! command -v npm &> /dev/null; then
-  brew install node
-fi
-
-brew tap FelixKratz/formulae
-brew install sketchybar
-brew services start sketchybar
